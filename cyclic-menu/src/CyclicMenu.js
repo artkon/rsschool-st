@@ -11,8 +11,8 @@ export default class CyclicMenu {
         for (let i = 0; i < menuItems.length; i += 1) {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.href = '#';
-            a.append(menuItems[i]);
+            a.href = menuItems[i][1];
+            a.append(menuItems[i][0]);
             li.appendChild(a);
             this.ul.appendChild(li);
         }
@@ -36,8 +36,8 @@ export default class CyclicMenu {
         const ul = this.getMenu.querySelector('ul');
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = '#';
-        a.append(name);
+        a.href = name[1];
+        a.append(name[0]);
         li.appendChild(a);
 
         if (position === 0) {
