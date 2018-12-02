@@ -33,9 +33,9 @@ class ChatController {
 
     handleSoundNotification(messageObj) {
         const condNotInHistory = !("history" in messageObj);
-        const condNotFromMe = messageObj.from !== this.model.getUserName();
+        const condNotFromMe = messageObj.from !== this.model.getUserName(this.config.userNameFieldLS);
         if (condNotInHistory && condNotFromMe) {
-            this.view.soundNitification();
+            this.view.soundNotification();
         }
     }
 
@@ -44,27 +44,29 @@ class ChatController {
             if (Notification.permission === "granted") {
                 return true;
             } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then((permission) => {
-                    if (permission === "granted") {
-                        console.log(permission);
-                        return true;
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    return false;
-                });
-            } else {
-                return false;
-            }
+                Notification.requestPermission()
+                    .then((permission) => {
+                        if (permission === "granted") {
+                            return true;
+                        }
+                        return false;
+                    })
+                    .catch(() => {
+                        return false;
+                    });
+            } 
+
+            return false;
         }
         
-        const showNotification = (messageObj) => {
-            const condNotInHistory = !("history" in messageObj);
+        const showNotification = (messageObject) => {
+            const condNotInHistory = !("history" in messageObject);
             const condTabNotActive = !this.view.isTabActive;
 
             if (condNotInHistory && condTabNotActive) {
-                const notification = new Notification('Chat', { body: messageObj.from + ': ' + messageObj.message });
+                const notification = new Notification(
+                    'Chat', { body: messageObject.from + ': ' + messageObject.message }
+                    );
             }
         }
 
@@ -75,7 +77,7 @@ class ChatController {
     }
 
     sendMessage(message) {
-        const from = this.model.getUserName();
+        const from = this.model.getUserName(this.config.userNameFieldLS);
 
         const messageObj = {
             from,
@@ -85,7 +87,7 @@ class ChatController {
     }
 
     viewHelper() {
-        this.view.putUserName(this.model.getUserName());
+        this.view.putUserName(this.model.getUserName(this.config.userNameFieldLS));
         this.view.setConnectState(1);
         this.view.toggleSendArea();
     }

@@ -1,6 +1,5 @@
 import EventEmmiter from '../helpers/EventEmmiter.js';
 import { createElement } from "../helpers/utils.js";
-import { create } from 'domain';
 
 class ChatView extends EventEmmiter {
     constructor(container, config) {
@@ -46,7 +45,7 @@ class ChatView extends EventEmmiter {
         this.scrollChat();
     }
 
-    soundNitification() {
+    soundNotification() {
         var soundSource = '<source src="' + this.config.messageSound + '" type="audio/mpeg">';
         this.sound.innerHTML = '<audio autoplay="autoplay">' + soundSource + '</audio>';
     }

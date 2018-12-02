@@ -18,7 +18,7 @@ class ChatModel extends EventEmmiter {
             this.newMessages.map(message => Object.assign(message, { history : true }));
         }
 
-        while(this.newMessages.length != 0){
+        while(this.newMessages.length !== 0){
             this.emit('newMessage');
         }
     }
@@ -62,8 +62,8 @@ class ChatModel extends EventEmmiter {
         localStorage.setItem('userName', name);
     }
 
-    getUserName() {
-        return (localStorage.getItem('userName')) ? localStorage.getItem('userName') : '';
+    getUserName(field) {
+        return (localStorage.getItem(field)) ? localStorage.getItem(field) : '';
     }
 }
 

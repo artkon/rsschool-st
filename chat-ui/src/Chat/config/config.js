@@ -1,5 +1,6 @@
 const config = {
-    url: "ws://st-chat.shas.tel",
+    url: 'ws://st-chat.shas.tel',
+    userNameFieldLS: 'userName',
     view : {
         messageSound: './sound/sound.mp3',
         messageLength: 300,

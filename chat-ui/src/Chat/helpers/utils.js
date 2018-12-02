@@ -17,11 +17,12 @@ const createElement = (tag, props, ...children) => {
     Object.assign(element, props);
 
     children.forEach(child => {
+        let el = child;
         if (typeof child === 'string') {
-            child = document.createTextNode(child);
+            el = document.createTextNode(child);
         }
 
-        element.appendChild(child);
+        element.appendChild(el);
     });
 
     return element;
