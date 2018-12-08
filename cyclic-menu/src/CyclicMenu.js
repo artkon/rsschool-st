@@ -1,68 +1,86 @@
-import { leftArrowPress, rightArrowPress, enterPress } from './cyclicMenuEvents.js';
-
 export default class CyclicMenu {
-    constructor(menuItems, container) {
+    constructor(menuItems, config, container) {
+        this.menuItems = menuItems;
+        this.config = config;
+        this.classNames = this.config.classNames;
+        this.container = container;
 
-        this.wrapper = document.createElement(container);
-
-        this.ul = document.createElement('ul');
-        this.ul.classList.add('menu-list');
-
-        for (let i = 0; i < menuItems.length; i += 1) {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = menuItems[i][1];
-            a.append(menuItems[i][0]);
-            li.appendChild(a);
-            this.ul.appendChild(li);
-        }
-        
-        const firstItem = this.ul.firstElementChild;
-        firstItem.classList.toggle('active');
-
-
-        this.addEventListener(document, 'keydown', leftArrowPress);
-        this.addEventListener(document, 'keydown', rightArrowPress);
-        this.addEventListener(document, 'keydown', enterPress);
-
-        this.wrapper.appendChild(this.ul);
+        this.menu = this.createMenu();
     }
 
-    get getMenu() {
-        return this.wrapper;
+    createMenu() {
+        const ul = document.createElement('ul');
+        ul.classList.add(this.classNames['menu']);
+
+        this.menuItems.forEach(menuItem => {
+            this.addItem(menuItem, ul);
+        });
+
+        const activeItem = ul.children[this.config['active-index']];
+        this.toggleActive(activeItem);
+
+        this.container.appendChild(ul);
+
+        this.keyEventsFunc = this.keysEvents.bind(this);
+        document.addEventListener('keydown', this.keyEventsFunc);
+
+        return ul;
     }
 
-    addItem(name, position = 1000) {
-        const ul = this.getMenu.querySelector('ul');
+    addItem(item, parent = this.menu) {
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = name[1];
-        a.append(name[0]);
+
+        li.classList.add(this.classNames['li']);
+        a.classList.add(this.classNames['link']);
+
+        a.href = item[1];
+        a.append(item[0]);
         li.appendChild(a);
 
-        if (position === 0) {
-            ul.firstChild.classList.toggle('active');
-            li.classList.toggle('active');
-            ul.insertBefore(li, ul.children[position]);
-        } else {
-            ul.insertBefore(li, ul.children[position]);
-            
-        }        
+        parent.appendChild(li);
     }
 
-    removeItem(position) {
-        const ul = this.getMenu.querySelector('ul');
-        const child = ul.children[position];
-        if (position === 0) {
-            if (child.nextElementSibling) {
-                child.nextElementSibling.classList.toggle('active');
-            }
+    toggleActive(item) {
+        item.classList.toggle(this.classNames['active-li']);
+        const link = item.querySelector('.' + this.classNames['link']);
+        link.classList.toggle(this.classNames['active-link']);
+    }
+
+    keysEvents(event) {
+        console.log(event.keyCode);
+        if (event.keyCode === this.config['keys']['nextItem']) {
+            this.changeActiveItem(1);
+        } else if (event.keyCode === this.config['keys']['prevItem']) {
+            this.changeActiveItem(-1);
+        } else if (event.keyCode === this.config['keys']['go']) {
+            const a = document.querySelector('.' + this.classNames['active-link']);
+            location.href = a.href;
         }
-        ul.removeChild(child);
-        this.itemsCount -= 1;
     }
 
-    addEventListener(target, event, func) {
-        target.addEventListener(event, func);
+    changeActiveItem(direction = 1) {
+        let li = document.querySelector('.' + this.classNames['active-li']);
+        this.toggleActive(li);
+
+        let activeLi;
+
+        if (direction === 1) {
+            activeLi = (li.nextElementSibling)
+                ? li.nextElementSibling 
+                : li.parentNode.firstChild;
+        } else if (direction === -1) {
+            activeLi = (li.previousElementSibling) 
+                ? li.previousElementSibling 
+                : li.parentNode.lastChild;
+        }
+        this.toggleActive(activeLi);
+    }
+
+
+    removeMenu() {
+        const parent = this.menu.parentElement;
+        parent.removeChild(this.menu);
+        document.removeEventListener('keydown', this.keyEventsFunc);
     }
 }
