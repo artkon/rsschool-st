@@ -1,0 +1,21 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.member {
+  display: inline-block;
+  color: #00B7FF;
+  padding: 5px;
+  background-color: powderblue;
+}
+
+#output {
+  display: none;
+  box-sizing: border-box;
+  padding: 10px;
+  height: 40px;
+  background-color: powderblue;
+  border: 1px solid #00B7FF;
+  margin: 20px;
+}

@@ -1,0 +1,13 @@
+{
+    "port": 3000,
+    "mongoose": {
+        "uri": "mongodb://127.0.0.1/wunderlist",
+        "options": {
+            "useCreateIndex": true,
+            "useNewUrlParser": true
+        }
+    },
+    "cookie": {
+        "maxAge": 86400000
+    }
+}
