@@ -46,7 +46,3 @@ passport.use(new GithubStrategy({
 }));
 
 module.exports = passport;
-
-// http://127.0.0.1:3000/auth/github/redirect
-// id: 3e0f30fc6e96d7f9da1a
-// secret: 52cb57224430e87273cd82d049af09b4bf3010c8
