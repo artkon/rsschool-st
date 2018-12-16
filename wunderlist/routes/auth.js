@@ -66,10 +66,7 @@ router.get('/github',
 const authConfig = { failureRedirect: '/', successRedirect: '/app/' };
 
 router.get('/github/redirect',
-    passport.authenticate('github', authConfig),
-    // (req, res) => {
-    //     res.redirect('/app/');
-    // }
+    passport.authenticate('github', authConfig)
 );
 
 
