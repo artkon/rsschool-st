@@ -1,0 +1,18 @@
+{
+  "author": "rootTheLure",
+  "name": "js-testing-workshop",
+  "version": "1.0.0",
+  "repository": "https://github.com/rootTheLure/js-testing-workshop",
+  "license": "MIT",
+  "description": "tools and tasks for workshop",
+  "scripts": {
+    "test:unit:dbg": "node ./node_modules/mocha/bin/mocha --inspect-brk -r ./tools/setup.js  -- \"./test/*.spec.js\"",
+    "test:unit": "node ./node_modules/mocha/bin/mocha -r ./tools/setup.js  -- \"./test/*.spec.js\""
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon": "*",
+    "sinon-chai": "*"
+  }
+}
