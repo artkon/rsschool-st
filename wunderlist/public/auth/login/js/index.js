@@ -13,6 +13,10 @@ const showMessage = (message) => {
 }
 
 const sendUserInfo = () => {
+    if (!validateInfo(login.value, password.value)) {
+        return false;
+    }
+
     const userIngo = {
         username: login.value,
         password: password.value

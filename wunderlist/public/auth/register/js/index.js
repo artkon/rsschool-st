@@ -12,21 +12,11 @@ const showMessage = (message) => {
     output.textContent = message;
 }
 
-const validateInfo = () => {
-    if (!pattern.test(login.value)) {
-        showMessage('Invalid login. Rules: (Length from 6 to 50 characters, letters, digist, "_", "." are allowed)');
-        return;
-    }
-
-    if (!pattern.test(password.value)) {
-        showMessage('Invalid password. Rules: (Length from 6 to 50 characters, letters, digist, "_", "." are allowed)');
-        return;
-    }
-    sendRegInfo();
-}
-
-
 const sendRegInfo = () => {
+    if (!validateInfo(login.value, password.value)) {
+        return false;
+    }
+
     const regIngo = {
         username: login.value,
         password: password.value
