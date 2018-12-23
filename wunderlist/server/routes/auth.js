@@ -62,12 +62,12 @@ router.get('/github',
         scope: ['user']
 }));
 
-const authConfig = { failureRedirect: '/', successRedirect: '/app/' };
+const authConfig = { 
+    failureRedirect: 'http://127.0.0.1:3001/', 
+    successRedirect: 'http://127.0.0.1:3001/app/' };
 
 router.get('/github/redirect',
     passport.authenticate('github', authConfig)
 );
-
-
 
 module.exports = router;

@@ -1,0 +1,30 @@
+.toggle-form-text {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.or-choise {
+    margin-top: 10px;
+}
+
+.green-background {
+    background-color: #2b7a78;
+}
+.green-font {
+    color: #F2F2F2;
+}
+    
+.green-progress-bar {
+    background: #65ccb8;
+}
+
+.red-background {
+    background-color: #FFCBCB;
+}
+.red-font {
+    color: red;
+}
+    
+.red-progress-bar {
+    background: red;
+}

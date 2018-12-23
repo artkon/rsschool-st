@@ -1,0 +1,114 @@
+import React, { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import AuthForm from '../AuthForm';
+import './style.css';
+
+
+class Auth extends Component {
+
+    state = {
+        isLoginMode: true
+    };
+
+    notify = (text, color = 'red') => toast(text, {
+        closeButton: false,
+        className: color + '-background',
+        bodyClassName: color + "-font",
+        progressClassName: color + '-progress-bar'
+      });
+
+    isValid = userInfo => {
+        const pattern = new RegExp("^[a-zA-Z0-9]([._](?![._])|[a-zA-Z0-9]){4,48}[a-zA-Z0-9]$");
+        if (!pattern.test(userInfo.username)) {
+            this.notify('Invalid login!');
+            this.notify('Length from 6 to 50 characters, letters, digist, "_", "." are allowed');
+            return false;
+        }
+    
+        if (!pattern.test(userInfo.password)) {
+            this.notify('Invalid password!');
+            this.notify('Length from 6 to 50 characters, letters, digist, "_", "." are allowed');
+            return false;
+        }
+
+        return true;
+    }
+
+    onSubmitRegister = userInfo => {
+        if(!this.isValid(userInfo)) {
+            return;
+        }
+
+        fetch('/auth/register/', {
+            method: 'POST',
+            body: JSON.stringify(userInfo),
+            headers:{
+                'Content-Type': 'application/json'
+            }})
+            .then((res) => {
+                if (res.url.includes('register')) {
+                    this.notify("You can't use this username or password!");
+                } else {
+                    this.notify("You registred successfully!", 'green');
+                    this.notify("Now you can LogIn!", 'green');
+                }
+            })
+            .catch(error => {
+                this.notify('Server error!');
+                console.log('Error:', error)
+            });
+    }
+
+    onSubmitLogin = userInfo => {
+        fetch('/auth/login/', {
+            method: 'POST',
+            body: JSON.stringify(userInfo),
+            headers:{
+                'Content-Type': 'application/json'
+            }})
+            .then(res => {
+                if (res.redirected) {
+                    if (!res.url.includes('app')) {
+                        this.notify("Username or password isn't correct!");
+                    } else {
+                        this.props.history.push('/app');
+                    }
+                } else {
+                    this.notify("Server error!");
+                }
+            })
+            .catch(error => {
+                this.notify('Server error!');
+                console.log('Error:', error)
+            });
+    }
+
+    toggleForm = (e) => {
+        e.preventDefault();
+        this.setState({ isLoginMode: !this.state.isLoginMode })
+    }
+
+    render() {
+        const args = this.state.isLoginMode
+            ? { action: this.onSubmitLogin, label: "LOGIN" }
+            : { action: this.onSubmitRegister, label: "REGISTER" }
+        return (
+            <div className="auth">
+                <div className="login">
+                    <AuthForm {...args} />
+                    <div className="or-choise">or&nbsp;
+                        <span onClick={this.toggleForm}
+                            className="toggle-form-text">
+                            { this.state.isLoginMode ? 'Create new account' : 'Log in with your account'}
+                        </span>
+                    </div>
+                </div>
+                <ToastContainer />
+            </div>
+        )
+    }
+}
+
+export default Auth;

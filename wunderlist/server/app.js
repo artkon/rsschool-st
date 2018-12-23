@@ -5,13 +5,23 @@ const http = require('http');
 const config = require('config');
 const path = require('path');
 const passport = require('passport');
+const cors = require('cors');
+
 const passportSetup = require('./config/passport-setup');
 const authRoutes = require('./routes/auth');
 const appRoutes = require('./routes/app');
+const apiRoutes = require('./routes/api');
 
 const app = express();
 
+const corsOptions = {
+    credentials: true,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
+
+app.use(require('cookie-parser')());
 
 app.use(cookieSession({
     maxAge: config.get('cookie:maxAge'),
@@ -25,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRoutes);
 app.use('/app', appRoutes);
-
+app.use('/api', apiRoutes);
 
 
 app.use(function(req, res, next){
