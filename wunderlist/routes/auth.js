@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const path = require('path');
 const User = require('../models/user').User;
+const pattern = require('../config/serverValidRegExps');
 
 router.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/auth/login/index.html'));
@@ -22,8 +23,6 @@ router.post('/register', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    const pattern = new RegExp("^[a-zA-Z0-9]([._](?![._])|[a-zA-Z0-9]){4,48}[a-zA-Z0-9]$");
-
     if (!pattern.test(username)) {
         res.send('Invalid login. Rules: (Length from 6 to 50 characters, letters, digist, "_", "." are allowed)');
         return;
@@ -34,11 +33,11 @@ router.post('/register', (req, res) => {
         return;
     }
 
-    User.findOne({ username: username }, (err, user) => {
+    User.findOne({ username }, (err, user) => {
         if(!user){
             if (err) { res.status(500).send('Eror occured') };
             if (user) { res.status(500).send('This user allready exists') };
-            new User({ "username": username, "password": password })
+            new User({ username, password })
                 .save((err, user) => {
                     if (err) { 
                         res.status(500).send('db error');
@@ -47,7 +46,7 @@ router.post('/register', (req, res) => {
                     res.redirect('/auth/login');
             });
         } else {
-            res.send("");
+            res.send("Bad request");
             console.log('This login is allready taken = ' + username);
         }
     });

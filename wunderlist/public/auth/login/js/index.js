@@ -12,15 +12,15 @@ const showMessage = (message) => {
     output.textContent = message;
 }
 
-const sendLogInfo = () => {
-    const logIngo = {
+const sendUserInfo = () => {
+    const userIngo = {
         username: login.value,
         password: password.value
     }
 
     fetch('/auth/login/', {
         method: 'POST',
-        body: JSON.stringify(logIngo),
+        body: JSON.stringify(userIngo),
         headers:{
             'Content-Type': 'application/json'
         }})
@@ -35,7 +35,6 @@ const sendLogInfo = () => {
 };
 
 const validateInfo = () => {
-    const pattern = new RegExp("^[a-zA-Z0-9]([._](?![._])|[a-zA-Z0-9]){4,48}[a-zA-Z0-9]$");
     if (!pattern.test(login.value)) {
         showMessage('Invalid login. Rules: (Length from 6 to 50 characters, letters, digist, "_", "." are allowed)');
         return;
@@ -45,7 +44,7 @@ const validateInfo = () => {
         showMessage('Invalid password. Rules: (Length from 6 to 50 characters, letters, digist, "_", "." are allowed)');
         return;
     }
-    sendLogInfo();
+    sendUserInfo();
 }
 
 submit.addEventListener('click', validateInfo);

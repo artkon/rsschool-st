@@ -7,7 +7,6 @@ const path = require('path');
 const passport = require('passport');
 const passportSetup = require('./config/passport-setup');
 const authRoutes = require('./routes/auth');
-const indexRoutes = require('./routes/index');
 const appRoutes = require('./routes/app');
 
 const app = express();
@@ -24,7 +23,6 @@ app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
 app.use('/app', appRoutes);
 
@@ -34,7 +32,7 @@ app.use(function(req, res, next){
     res.status(404);
     if (req.accepts('html')) {
         res.redirect('/404.html')
-      return;
+        return;
     }
   });
 
