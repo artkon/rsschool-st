@@ -3,7 +3,7 @@ const User = require('../models/user').User;
 
 router.get('/username', (req, res) => {
     const username = req.user.username ? req.user.username : req.user.githubUserName;
-    res.json({ username })
+    res.send(JSON.stringify({ username }));
   })
 
 module.exports = router;

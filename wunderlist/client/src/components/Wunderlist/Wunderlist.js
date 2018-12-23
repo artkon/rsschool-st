@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button from '../Button';
+import { dispFetchUsername } from '../../actionCreators/user';
 
 class Wunderlist extends Component {
     state = { user: null };
 
     componentDidMount () {
-        fetch('/api/username')
-            .then(res => res.json())
-            .then(user => {
-                this.setState({ user })
-            })
+        this.props.fetchData();
     }
 
 
@@ -33,10 +31,19 @@ class Wunderlist extends Component {
                 <span>Hello {user ? user.username : 'No user data'}!</span>
                 <div className="logout">
                     <Button onClick={this.logOut} label = "LogOut" />
+                    {
+                        this.props.username
+                        && <div>Username is {this.props.username}</div>
+                    }
                 </div>
             </div>
         )
     }
 }
 
-export default Wunderlist;
+// export default Wunderlist;
+
+export default connect(
+    (state) => ({ username: state.username}),
+    { fetchData: dispFetchUsername }
+)(Wunderlist);
