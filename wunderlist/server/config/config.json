@@ -1,5 +1,6 @@
 {
     "port": 3000,
+    "reactServerURI": "http://127.0.0.1:3001/",
     "mongoose": {
         "uri": "mongodb://127.0.0.1/wunderlist",
         "options": {

@@ -3,6 +3,7 @@ const passport = require('passport');
 const path = require('path');
 const User = require('../models/user').User;
 const pattern = require('../config/serverValidRegExps');
+const config = require('../config/');
 
 router.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/auth/login/index.html'));
@@ -63,8 +64,8 @@ router.get('/github',
 }));
 
 const authConfig = { 
-    failureRedirect: 'http://127.0.0.1:3001/', 
-    successRedirect: 'http://127.0.0.1:3001/app/' };
+    failureRedirect: config.get('reactServerURI'), 
+    successRedirect: config.get('reactServerURI') + 'app' };
 
 router.get('/github/redirect',
     passport.authenticate('github', authConfig)
