@@ -10,7 +10,14 @@ class App extends Component {
         return (
             <Router>
                 <Switch>
-                    <Route exact path="/" component={Auth} />
+                    <Route exact
+                        path="/login" 
+                        render={(props) => <Auth {...props} isLogin={true}/>} 
+                    />
+                    <Route exact
+                        path="/register" 
+                        render={(props) => <Auth {...props} isLogin={false}/>} 
+                    />
                     <Route path="/app" component={Wunderlist} />
                     <Route path="/*" component={NotFound} />
                 </Switch>

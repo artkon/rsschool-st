@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
 import AuthForm from '../AuthForm';
 import './style.css';
 
 
 class Auth extends Component {
-
     state = {
-        isLoginMode: true
+        isLoginMode: this.props.isLogin || false
     };
 
     notify = (text, color = 'red') => toast(text, {
@@ -86,7 +86,6 @@ class Auth extends Component {
     }
 
     toggleForm = (e) => {
-        e.preventDefault();
         this.setState({ isLoginMode: !this.state.isLoginMode })
     }
 
@@ -95,14 +94,19 @@ class Auth extends Component {
             ? { authHandler: this.onSubmitLogin, label: "LOGIN" }
             : { authHandler: this.onSubmitRegister, label: "REGISTER" }
         return (
-            <div className="auth">
-                <div className="login">
+            <div className="auth-wrap">
+                <div className="auth">
                     <AuthForm {...args} />
                     <div className="or-choise">or&nbsp;
-                        <span onClick={this.toggleForm}
+                        <Link
+                            to={this.state.isLoginMode ? "/register" : "/login"} 
+                            onClick={this.toggleForm}
                             className="toggle-form-text">
-                            { this.state.isLoginMode ? 'Create new account' : 'Log in with your account'}
-                        </span>
+                            { this.state.isLoginMode 
+                                ? 'Create new account'
+                                : 'Log in with your account'
+                            }
+                        </Link>
                     </div>
                 </div>
                 <ToastContainer />
