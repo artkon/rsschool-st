@@ -92,8 +92,8 @@ class Auth extends Component {
 
     render() {
         const args = this.state.isLoginMode
-            ? { action: this.onSubmitLogin, label: "LOGIN" }
-            : { action: this.onSubmitRegister, label: "REGISTER" }
+            ? { authHandler: this.onSubmitLogin, label: "LOGIN" }
+            : { authHandler: this.onSubmitRegister, label: "REGISTER" }
         return (
             <div className="auth">
                 <div className="login">

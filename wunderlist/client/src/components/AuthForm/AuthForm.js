@@ -30,7 +30,7 @@ class AuthForm extends Component {
             password: this.state.password
         }
 
-        this.props.action(userInfo);
+        this.props.authHandler(userInfo);
     }
 
     render() {
