@@ -1,0 +1,68 @@
+.chat {
+    display: inline-block;
+    overflow: auto;
+    padding-left: 10px;
+    text-align: center;
+}
+
+.chat-messages {
+    text-align: left;
+    border: 1px solid dodgerblue;
+    overflow: scroll;
+    box-sizing: border-box;
+    height: 500px;
+    width: 500px;
+    padding-left: 0px;
+    border-radius: 0.5%;
+}
+
+.chat-messages li {
+    list-style: none;
+    font-family: sans-serif;
+    word-wrap: break-word;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.chat-username {
+    vertical-align: top;
+    text-align: center;
+}
+
+.chat-input {
+    font-size: 13px;
+    vertical-align: top;
+    margin-right: 20px;
+    width: 413px;
+}
+
+.chat-send {
+    border: 0;
+    height: 38px;
+    width: 60px;
+    border-radius: 2%;
+    background-color: grey;
+    color: white;
+}
+.chat-send.chat-button-active {
+    background-color: dodgerblue;
+}
+
+.chat-connection {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    color: grey;
+    font-size: 10px;
+}
+
+.message-time {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 10px;
+    font-style: italic;
+    color: grey;
+    margin-right: 10px;
+    padding-left: 5px;
+}
+
+.message-name {
+    font-weight: bold;
+}
