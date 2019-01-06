@@ -5,3 +5,4 @@ node_modules
 *.eslintrc.json
 package-lock.json
 keys.json
+.env
