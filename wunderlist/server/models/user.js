@@ -2,6 +2,7 @@ const mongoose = require('../config/mongoose-setup');
 const Schema = mongoose.Schema;
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const crypto = require('crypto');
+const config = require('../config');
 
 const schema = new Schema({
     username: {
@@ -10,9 +11,6 @@ const schema = new Schema({
         sparse: true
     },
     hashedPassword: {
-        type: String,
-    },
-    salt: {
         type: String,
     },
     created: {
@@ -34,7 +32,7 @@ schema.methods.encryptPassword = function(password) {
 schema.virtual('password')
     .set(function(password) {
         this._plainPassword = password;
-        this.salt = Math.random() + '';
+        this.salt = config.get('dbSalt');
         this.hashedPassword = this.encryptPassword(password);
     })
     .get(function() {
