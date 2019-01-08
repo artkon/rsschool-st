@@ -1,11 +1,13 @@
 const mongoose = require('../config/mongoose-setup');
 const Schema = mongoose.Schema;
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const crypto = require('crypto');
 
 const schema = new Schema({
     username: {
         type: String,
         unique: true,
+        sparse: true
     },
     hashedPassword: {
         type: String,
@@ -19,7 +21,8 @@ const schema = new Schema({
     },
     githubId: {
         type: String,
-        unique: true
+        unique: true,
+        sparse: true
     },
     githubUserName: String
 })
@@ -41,5 +44,7 @@ schema.virtual('password')
 schema.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 }
+
+schema.plugin(AutoIncrement, {inc_field: 'userId'});
 
 module.exports.User = mongoose.model('User', schema);
