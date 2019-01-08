@@ -26,7 +26,7 @@ const schema = new Schema({
 })
 
 schema.methods.encryptPassword = function(password) {
-    return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+    return crypto.createHmac('sha1', config.get('dbSalt')).update(password).digest('hex');
 }
 
 schema.virtual('password')
