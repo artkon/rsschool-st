@@ -9,200 +9,295 @@ router.get('/username', (req, res) => {
 });
 
 router.get('/user/me', (req, res) => {
-    res.send(req.user);
+    if (!req.user) {
+        res.status(401).send('Unauthorized');
+    } else {
+        const userId = req.user.userId;
+
+        User.findOne({ userId }, (err, user) => {
+            if (err) {
+                res.status(500).send(err);
+                console.log(err.message);
+            } else {
+                res.send(user);
+            }
+        });
+    }
 });
 
 router.put('/user/me', (req, res) => {
-    User.findOne(
-        { username: req.user.username },
-        (err, user) => {
-            if (err) { throw new Error("Failed to find user") }
-            user.username = req.body.username;
-            user.password = req.body.password;
-            user.save(
-                (err, user) => {
-                    if (err) { 
-                        res.status(500).send('db error');
-                        console.log(err);
-                    }
-                }
-    )});
-    res.send(req.body.username + ' ' + req.body.password);
-});
+    const userId = req.user.userId;
+    const newUserData = req.body;
 
-router.delete('/user/me', (req, res) => {
-    User.find({ username: req.user.username }).remove((err, data) => {
-        console.log('err: ', err);
-        console.log('data: ', data);
-        res.send(data);
+    User.findOne({ userId }, (err, user) => {
+        if (err) {
+            res.status(500).send(err);
+            console.log(err.message);
+        } else {
+            const updatedUser = Object.assign(user, newUserData);
+
+            updatedUser.save((err, user) => {
+                if (err) { 
+                    res.status(500).send(err);
+                    console.log(err.message);
+                } else {
+                    res.status(200).send(user);
+                }
+            });
+        }
     });
 });
 
+router.delete('/user/me', (req, res) => {
+    const userId = req.user.userId;
+    
+    User.findOne({ userId }, (err, user) => {
+        user.remove((err, data) => {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.send(data);
+            }
+        });
+    })
+});
+
 router.post('/lists', (req, res) => {
-    console.log(req.body.name);
-    new List({ name: req.body.name, owners: req.user.username })
+    const userId = req.user.userId;
+    const listName = req.body.name;
+
+    new List({ name: listName, owners: userId })
         .save((err, list) => {
-            console.log(list);
             if (err) { 
-                res.status(500).send('db error');
+                res.status(500).send(err);
                 console.log(err);
-            };
+            }
             res.send(list);
 })});
 
 router.get('/lists', (req, res) => {
-    console.log(req.user.username);
-    List.find({ owners: req.user.username }, (err, lists) => {
-        console.log(lists);
-        if (err) throw new Error("Failed to find lists");
-        res.send(lists);
+    const userId = req.user.userId;
+
+    List.find({ owners: userId }, (err, lists) => {
+        if (err) {
+            res.status(500).send(err);
+            console.log(err);
+        } else {
+            res.send(lists);
+        }
     });
 });
 
 router.get('/lists/:id', (req, res) => {
-    console.log(req.user.username);
-    List.find({ owners: req.user.username }, (err, lists) => {
-        for (let i = 0; i < lists.length; i += 1) {
-            if (lists[i].id == req.params.id) {
-                res.send(lists[i]);
+    const userId = req.user.userId;
+    const listId = req.params.id;
+
+    List.findOne({ id: listId }, (err, list) => {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+        } else if (list) {
+            if (!list.owners.includes(userId)) {
+                res.sendStatus(401);
+            } else {
+                res.send(list);
             }
+        } else {
+            res.sendStatus(404);
         }
-        res.send("Not found");
     });
 });
 
 router.put('/lists/:id', (req, res) => {
-    let isFound = false;
-    List.find({ owners: req.user.username }, (err, lists) => {
-        for (let i = 0; i < lists.length; i += 1) {
-            if (lists[i].id == req.params.id) {
-                isFound = true;
-                lists[i].name = req.body.name;
-                lists[i].owners = req.body.owners;
-                lists[i].save((err, list) => {
-                    res.send(list);
-                })
+    const userId = req.user.userId;
+    const listId = req.params.id;
+
+    List.findOne({ id: listId }, (err, list) => {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+        } else if (list) {
+            if (!list.owners.includes(userId)) {
+                res.sendStatus(401);
+            } else {
+                list.set(req.body)
+                    .save((err, updatedList) => {
+                        if (err) {
+                            res.status(500).send(err);
+                            console.log(err);
+                        } else {
+                            res.send(updatedList);
+                        }
+                    });
             }
-        }
-        if (!isFound) {
-            res.send("Not found");
+        } else {
+            res.sendStatus(404);
         }
     });
 });
 
 router.delete('/lists/:id', (req, res) => {
-    List.find({ id: req.params.id }).remove((err, data) => {
-        console.log('err: ', err);
-        console.log('data: ', data);
-        res.send(data);
-    });
+    List.findOne({ id: req.params.id }, (err, list) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        } else if (!list) {
+            res.sendStatus(404);
+        } else {
+            list.remove((err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    res.send(data);
+                }
+            });
+        }
+    })
 });
 
 
 router.post('/lists/:listId/todos', (req, res) => {
-    let isFound = false;
-    List.find({ owners: req.user.username }, (err, lists) => {
-        for (let i = 0; i < lists.length; i += 1) {
-            if (lists[i].id != req.params.listId) {
-                continue;
-            }
-            isFound = true;
-            listId = lists[i].id;
-            console.dir('listId: ', req.params.listId);
-            new Todo({ title: req.body.title, listId })
-                .save((err, todo) => {
-                    console.log(todo);
-                    if (err) { 
-                        res.status(500).send('db error');
+    const listId = parseInt(req.params.listId, 10);
+    const title = req.body.title;
+
+    List.findOne({ id: listId }, (err, list) => {
+        if (err) {
+            res.status(500).send(err);
+            console.log(err);
+        } else {
+            new Todo({ title, listId }).save((err, todo) => {
+                if (err) { 
+                    res.status(500).send(err);
+                    console.log(err);
+                }
+                list.todos.push(todo.todoId);
+                list.save((err, list) => {
+                    if (err) {
                         console.log(err);
-                    };
-                    res.send(todo);
-        })}
-        if (!isFound) {
-            res.send("Not found");
+                    } else {
+                        console.log('Todo saved in list');
+                        res.send(list);
+                    }
+                })
+                res.send(todo);
+            })
         }
     });
 });
 
 router.get('/lists/:listId/todos', (req, res) => {
-    let isFound = false;
-    List.find({ owners: req.user.username }, (err, lists) => {
-        for (let i = 0; i < lists.length; i += 1) {
-            if (lists[i].id != req.params.listId) {
-                continue;
+    const userId = req.user.userId;
+    const listId = req.params.listId;
+
+    List.findOne({ id: listId }, (err, list) => {
+        if (err) {
+            console.log(err);
+        } else  if (!list) {
+            res.sendStatus(404);
+        } else {
+            if (!list.owners.includes(userId)) {
+                res.sendStatus(401);
+            } else {
+                Todo.find({ listId }, (err, todos) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.send(todos);
+                    }
+                })
             }
-            isFound = true;
-            Todo.find({ listId: req.params.listId }, (err, todos) => {
-                if (err) throw new Error("Todos not found");
-                res.send(todos);
-            })
         }
-        if (!isFound) {
-            res.send("Not found");
-        }
-    });
-    
+    })
 });
 
 router.get('/lists/:listId/todos/:id', (req, res) => {
-    let isFound = false;
-    List.find({ owners: req.user.username }, (err, lists) => {
-        for (let i = 0; i < lists.length; i += 1) {
-            if (lists[i].id != req.params.listId) {
-                continue;
+    const userId = req.user.userId;
+    const listId = req.params.listId;
+    const idInList = req.params.id;
+
+    List.findOne({ id: listId }, (err, list) => {
+        if (err) {
+            console.log(err);
+        } else  if (!list) {
+            res.sendStatus(404);
+        } else {
+            if (!list.owners.includes(userId)) {
+                res.sendStatus(401);
+            } else {
+                Todo.findOne({ listId , idInList }, (err, todo) => {
+                    if (err) {
+                        console.log(err);
+                    } else if (!todo){
+                        res.sendStatus(404);
+                    } else {
+                        res.send(todo);
+                    }
+                })
             }
-            isFound = true;
-            Todo.find({ listId: req.params.listId, todoId: req.params.id }, (err, todo) => {
-                if (err) throw new Error("Todos not found");
-                res.send(todo);
-            })
         }
-        if (!isFound) {
-            res.send("Not found");
-        }
-    });
-    
+    })
 });
 
 router.put('/lists/:listId/todos/:id', (req, res) => {
-    let isFound = false;
-    List.find({ owners: req.user.username }, (err, lists) => {
-        for (let i = 0; i < lists.length; i += 1) {
-            if (lists[i].id != req.params.listId) {
-                continue;
-            }
-            isFound = true;
-            Todo.findOne({ listId: req.params.listId, todoId: req.params.id }, (err, todo) => {
-                if (err) throw new Error("Todos not found");
-                todo.title = req.body.title;
-                todo.done = req.body.done;
-                todo.listId = req.params.listId;
-                console.log(todo);
-                todo.save((err, data) => {
-                    console.log(err);
-                    console.log(data);
-                    res.send("CHANGED");
+    const userId = req.user.userId;
+    const listId = req.params.listId;
+    const idInList = req.params.id;
+
+    List.findOne({ id: listId }, (err, list) => {
+        if (err) {
+            console.log(err);
+        } else  if (!list) {
+            res.sendStatus(404);
+        } else {
+            if (!list.owners.includes(userId)) {
+                res.sendStatus(401);
+            } else {
+                Todo.findOne({ listId , idInList }, (err, todo) => {
+                    if (err) {
+                        console.log(err);
+                    } else if (!todo){
+                        res.sendStatus(404);
+                    } else {
+                        const updatedTodo = Object.assign(todo, req.body);
+                        updatedTodo.save((err, data) => {
+                            if (err) {
+                                console.log(err);
+                                res.sendStatus(500);
+                            } else {
+                                res.status(200).send(data);
+                            }
+                        })
+                    }
                 })
-            })
+            }
         }
-        if (!isFound) {
-            res.send("Not found");
-        }
-    });
-    
+    })
 });
 
 
-router.delete('/lists/:listId/todos/:todoId', (req, res) => {
-    console.log(req.params);
-    List.findOne({ id: req.params.listId }, (err, list) => {
-        Todo.findOne({ listId: req.params.listId, todoId: req.params.todoId }, (err, todo) => {
+router.delete('/lists/:listId/todos/:idInList', (req, res) => {
+    const listId = req.params.listId;
+    const idInList = req.params.idInList;
+    console.log('listId: ', listId, ' idInList: ', idInList);
+    
+
+    Todo.findOne({ listId, idInList }, (err, todo) => {
+        if (err) {
+            res.sendStatus(500);
+        } else if (!todo) {
+            res.sendStatus(404);
+        } else {
+            console.log('todo: ', todo);
             todo.remove((err, data) => {
-                console.log(err);
-                console.log(data);
-                res.send("DELETED");
+                if (err) {
+                    res.status(500).send(err);
+                    console.log(err);
+                } else {
+                    res.status(200).send(data);
+                }
             })
-        })
+        }
     })
 });
 
