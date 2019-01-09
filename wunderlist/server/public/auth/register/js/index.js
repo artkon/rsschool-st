@@ -13,9 +13,6 @@ const showMessage = (message) => {
 }
 
 const sendRegInfo = () => {
-    if (!validateInfo(login.value, password.value)) {
-        return false;
-    }
 
     const regIngo = {
         username: login.value,
@@ -39,4 +36,4 @@ const sendRegInfo = () => {
         .catch(error => console.error('Error:', error));
 };
 
-submit.addEventListener('click', validateInfo);
+submit.addEventListener('click', sendRegInfo);
