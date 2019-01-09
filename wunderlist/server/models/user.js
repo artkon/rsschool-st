@@ -43,6 +43,12 @@ schema.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 }
 
+schema.pre('remove', function(next) {
+    console.log('Pre remove');
+    mongoose.model('List').removeUsersListsById(this.userId);
+    next();
+});
+
 schema.plugin(AutoIncrement, {inc_field: 'userId'});
 
 module.exports.User = mongoose.model('User', schema);

@@ -18,6 +18,26 @@ const schema = new Schema({
     }
 });
 
-schema.plugin(AutoIncrement, { id: 'idNumber', inc_field: 'todoId', reference_fields: ['listId'] });
+schema.statics.findByListId = function(listId, cb) {
+    return this.find({ listId }, cb);
+};
+
+schema.pre('remove', function(next) {
+    mongoose.model('List').removeTodo(this.todoId);
+    next();
+});
+
+schema.statics.deleteByListId = function(listId) {
+    this.deleteMany({ listId }, (err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(data);
+        }
+    });
+};
+
+schema.plugin(AutoIncrement, { id: 'idNumber', inc_field: 'idInList', reference_fields: ['listId'] });
+schema.plugin(AutoIncrement, { inc_field: 'todoId' });
 
 module.exports.Todo = mongoose.model('Todo', schema);
