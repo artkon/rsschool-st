@@ -1,0 +1,10 @@
+.user {
+    display: flex;
+    align-items: center;
+    font-size: 120%;
+    height: 50px;
+}
+
+.user-icon {
+    padding: 0 10px;
+}

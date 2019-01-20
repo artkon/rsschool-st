@@ -1,13 +1,7 @@
 import { GET_USERNAME } from '../actionTypes/user';
 
-const fetchUsername = () => {
-    fetch('/api/username')
-    .then(res => {
-        return res.json()
-    })
-    .then(username => {
-        return username;
-    });
+const fetchUser = () => {
+    return fetch('/api/user/me')
 }
 
 export function getUsername (username) {
@@ -21,7 +15,9 @@ export function getUsername (username) {
 
 export function dispFetchUsername () {
     return async (dispatch) => {
-        const username = await fetchUsername();
+        const res = await fetchUser();
+        const user = await res.json();
+        const username = user.username || user.githubUserName;
         dispatch(getUsername(username));
     }
 }

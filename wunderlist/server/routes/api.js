@@ -172,12 +172,9 @@ router.post('/lists/:listId/todos', (req, res) => {
                     console.log(err);
                 }
                 list.todos.push(todo.todoId);
-                list.save((err, list) => {
+                list.save((err) => {
                     if (err) {
                         console.log(err);
-                    } else {
-                        console.log('Todo saved in list');
-                        res.send(list);
                     }
                 })
                 res.send(todo);

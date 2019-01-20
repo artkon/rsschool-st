@@ -1,0 +1,33 @@
+.lists {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.list-item:hover {
+    background-color: aliceblue;
+}
+
+.list-link {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.list-link-active {
+    background-color: aliceblue;
+}
+
+.list-icon {
+    font-size: 130%;
+    padding: 0 10px;
+}
+
+.list-name {
+    outline: none;
+    font-size: 100%;
+    background-color: transparent;
+    border: 0px;
+}
