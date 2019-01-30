@@ -91,7 +91,7 @@ router.get('/lists', (req, res) => {
 router.get('/lists/:id', (req, res) => {
     const userId = req.user.userId;
     const listId = req.params.id;
-
+    
     List.findOne({ id: listId }, (err, list) => {
         if (err) {
             console.log(err);

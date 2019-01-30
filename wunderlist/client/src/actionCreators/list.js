@@ -1,4 +1,9 @@
-import { GET_LISTS, CREATE_LIST, LIST_EDIT, LIST_SUBMIT } from '../actionTypes/list';
+import { GET_LISTS,
+    CREATE_LIST,
+    LIST_EDIT,
+    LIST_SUBMIT,
+    LIST_DELETE
+} from '../actionTypes/list';
 
 // GET LISTS
 
@@ -74,7 +79,7 @@ export function dispEditList (list) {
 
 // LIST_SUBMIT
 
-const fetchList = (listId, list) => {
+const fetchUpdateList = (listId, list) => {
     return fetch(`/api/lists/${listId}`, {
         method: "PUT",
         headers: {
@@ -93,8 +98,61 @@ export function submitList () {
 
 export function dispFetchList (listId, list) {
     return async (dispatch) => {
-        await fetchList(listId, list);
+        await fetchUpdateList(listId, list);
         dispatch(submitList());
     }
 }
 
+// LIST_DELETE
+
+const fetchDeleteList = (listId) => {
+    return fetch(`/api/lists/${listId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+}
+
+export function deleteList () {
+    return {
+        type: LIST_DELETE,
+        payload: {}
+    }
+}
+
+export function dispDeleteList (listId) {
+    return async (dispatch) => {
+        await fetchDeleteList(listId);
+        dispatch(deleteList());
+
+        const res = await fetchLists();
+        const lists = await res.json();
+        dispatch(getLists(lists));
+    }
+}
+
+
+// LIST_ADD_OWNER
+const fetchList = (listId) => {
+    return fetch(`/api/lists/${listId}`);
+}
+
+export function dispFetchEditOwnerList (listId, userId, toDelete = false) {
+    return async (dispatch) => {
+        let res = await fetchList(listId);
+        let list = await res.json();
+
+        if (toDelete) {
+            list.owners = list.owners.filter(ownerId => ownerId !== userId);
+        } else {
+            !list.owners.includes(userId) && list.owners.push(userId);
+        }
+
+        await fetchUpdateList(listId, list);
+
+        res = await fetchLists();
+        const lists = await res.json();
+        dispatch(getLists(lists));
+    }
+}

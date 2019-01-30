@@ -17,10 +17,59 @@
     padding: 0px;
 }
 
+.todo-list-header {
+    display: flex;
+    align-items: center;
+}
+
 .todo-title {
     margin: 5px;
     margin-right: 20px;
+    padding-left: 5px;
     background-color: rgba(200,200,200,0.8);
+    display: inline-block;
+    width: 84%;
+}
+
+.delete-list-button {
+    width: 10%;
+    height: 30px;
+    background-color: antiquewhite;
+}
+
+.share-list {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+    margin-right: 20px;
+    padding-left: 5px;
+    background-color: rgba(200,200,200,0.8);
+    width: 96,5%;
+    height: 30px;
+}
+
+.owners-list {
+    display: inline-block;
+    padding: 0px;
+    margin: 0px;
+}
+
+.owner-list-item {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.share-list-input {
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    border: 0px;
+}
+
+.share-list-button {
+    height: 25px;
+    border-radius: 5%;
+    background-color: antiquewhite;
 }
 
 .new-todo {
@@ -31,7 +80,7 @@
     padding-left: 10px;
 }
 
-.new-todo-inout {
+.new-todo-input {
     background-color: transparent;
     border: 0px;
     font-size: 18px;
@@ -41,6 +90,8 @@
 }
 
 .todo-item {
+    display: flex;
+    align-items: center;
     padding: 5px;
     margin: 3px;
     margin-right: 20px;
@@ -53,4 +104,12 @@
     font-size: 18px;
     width: 95%;
     outline: none;
+}
+
+.delete-todo-button {
+    border: 0px;
+    padding: 0px;
+    background: transparent;
+    cursor : pointer;
+    font-size: 16px;
 }

@@ -1,4 +1,4 @@
-import { GET_TODOS, TODO_EDIT, TODO_SUBMIT, TODO_CREATE, TODO_DONE } from '../actionTypes/todo';
+import { GET_TODOS, TODO_EDIT, TODO_SUBMIT, TODO_CREATE, TODO_DONE, TODO_DELETE } from '../actionTypes/todo';
 
 const fetchTodos = (listId) => {
     return fetch(`/api/lists/${listId}/todos`)
@@ -37,7 +37,7 @@ export function editTodo (todo) {
 }
 
 export function dispEditTodo (todo) {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(editTodo(todo));
     }
 }
@@ -86,9 +86,7 @@ const fetchNewTodo = (listId, todoName) => {
 export function createTodo () {
     return {
         type: TODO_CREATE,
-        payload: {
-
-        }
+        payload: {}
     }
 }
 
@@ -96,6 +94,10 @@ export function dispFetchNewTodo (listId, todoName) {
     return async (dispatch) => {
         await fetchNewTodo(listId, todoName);
         dispatch(createTodo());
+
+        const res = await fetchTodos(listId);
+        const todos = await res.json();
+        dispatch(getTodos(todos, listId));
     }
 }
 
@@ -125,5 +127,34 @@ export function dispDoneTodo (listId, idInList, todo) {
     return (dispatch) => {
         fetchDoneTodo(listId, idInList, todo);
         dispatch(doneTodo(todo));
+    }
+}
+
+
+// TODO_DELETE
+const fetchDeleteTodo = (listId, todoId) => {
+    return fetch(`/api/lists/${listId}/todos/${todoId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+}
+
+export function deleteTodo () {
+    return {
+        type: TODO_DELETE,
+        payload: {}
+    }
+}
+
+export function dispDeleteTodo (listId, idInList) {
+    return async (dispatch) => {
+        await fetchDeleteTodo(listId, idInList);
+        dispatch(deleteTodo());
+
+        const res = await fetchTodos(listId);
+        const todos = await res.json();
+        dispatch(getTodos(todos, listId));
     }
 }

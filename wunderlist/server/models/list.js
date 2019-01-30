@@ -74,7 +74,9 @@ schema.statics.removeTodo = function(todoId, cb) {
                     console.log(err);
                 } else {
                     console.log('Deleting todo in list is done');
-                    cb();
+                    if(typeof cb === 'function'){
+                        cb();
+                    }
                 }
             })
         }

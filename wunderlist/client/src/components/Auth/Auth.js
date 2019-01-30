@@ -85,7 +85,7 @@ class Auth extends Component {
             });
     }
 
-    toggleForm = (e) => {
+    toggleForm = () => {
         this.setState({ isLoginMode: !this.state.isLoginMode })
     }
 
@@ -99,7 +99,7 @@ class Auth extends Component {
                     <AuthForm {...args} />
                     <div className="or-choise">or&nbsp;
                         <Link
-                            to={this.state.isLoginMode ? "/register" : "/login"} 
+                            to={this.state.isLoginMode ? "/register" : "/"} 
                             onClick={this.toggleForm}
                             className="toggle-form-text">
                             { this.state.isLoginMode 

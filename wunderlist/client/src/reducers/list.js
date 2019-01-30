@@ -1,4 +1,10 @@
-import { GET_LISTS, CREATE_LIST, LIST_EDIT, LIST_SUBMIT } from '../actionTypes/list';
+import { GET_LISTS,
+    CREATE_LIST,
+    LIST_EDIT,
+    LIST_SUBMIT,
+    LIST_DELETE 
+} from '../actionTypes/list';
+
 const defaultState = { list: [] };
 
 export default function list (state = defaultState, action) {
@@ -21,6 +27,9 @@ export default function list (state = defaultState, action) {
             return { lists };
         }
         case LIST_SUBMIT: {
+            return Object.assign({}, state);
+        }
+        case LIST_DELETE: {
             return Object.assign({}, state);
         }
         default:

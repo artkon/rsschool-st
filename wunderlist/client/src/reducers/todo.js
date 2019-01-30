@@ -1,4 +1,11 @@
-import { GET_TODOS, TODO_EDIT, TODO_SUBMIT, TODO_CREATE, TODO_DONE } from '../actionTypes/todo';
+import { GET_TODOS, 
+    TODO_EDIT, 
+    TODO_SUBMIT, 
+    TODO_CREATE, 
+    TODO_DONE, 
+    TODO_DELETE 
+} from '../actionTypes/todo';
+
 const defaultState = { todos: [] };
 
 export default function todo (state = defaultState, action) {
@@ -36,6 +43,9 @@ export default function todo (state = defaultState, action) {
             const todos = state.todos.slice();
 
             return { todos, listId: state.listId };
+        }
+        case TODO_DELETE: {
+            return Object.assign({}, state);
         }
         default:
             return state;
