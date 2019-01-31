@@ -1,4 +1,6 @@
-import { GET_USER, 
+import { USER_CREATE,
+    USER_LOGIN,
+    GET_USER, 
     USER_CHANGE_USERNAME, 
     USER_SUBMIT_USERNAME, 
     USER_DELETE 
@@ -8,6 +10,12 @@ const defaultState = { usernname: '' };
 
 export default function user (state = defaultState, action) {
     switch (action.type) {
+        case USER_CREATE:
+            return { username: action.payload.user.username, 
+                userId: action.payload.user.userId };
+        case USER_LOGIN:
+            return { username: action.payload.user.username, 
+                userId: action.payload.user.userId };
         case GET_USER:
             return { username: action.payload.user.username, 
                 userId: action.payload.user.userId };

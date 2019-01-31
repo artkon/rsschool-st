@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose = require('./config/mongoose-setup');
+require('./config/mongoose-setup');
 const cookieSession = require('cookie-session');
 const http = require('http');
 const config = require('config');
@@ -7,7 +7,7 @@ const path = require('path');
 const passport = require('passport');
 const cors = require('cors');
 
-const passportSetup = require('./config/passport-setup');
+require('./config/passport-setup');
 const authRoutes = require('./routes/auth');
 const appRoutes = require('./routes/app');
 const apiRoutes = require('./routes/api');
@@ -35,10 +35,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRoutes);
 app.use('/app', appRoutes);
-app.use('/api', apiRoutes);
+
+const isAuthenticated = (req, res, next) => {
+    req.user ? next() : res.status(403).json('You are not authorized. Please, login first!')
+}
+app.use('/api', isAuthenticated, apiRoutes);
 
 
-app.use(function(req, res, next){
+app.use(function(req, res){
     res.status(404);
     if (req.accepts('html')) {
         res.redirect('/404.html')
@@ -47,7 +51,7 @@ app.use(function(req, res, next){
   });
 
 
-const server = http.createServer(app).listen(config.get('port'));
+http.createServer(app).listen(config.get('port'));
 
 
 module.exports = app;

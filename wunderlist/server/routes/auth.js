@@ -9,11 +9,13 @@ router.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/auth/login/index.html'));
 });
 
+//{ failureRedirect: '/auth/login/', successRedirect: '/app/' }
+
 router.post('/login',
-    passport.authenticate('local', { 
-        failureRedirect: '/auth/login/', 
-        successRedirect: '/app/'
-    })
+    passport.authenticate('local'), (req, res) => {
+        console.log('authenticated, user is: ', req.user);
+        res.json({ username: req.user.username, userId: req.user.userId });
+    }
 );
 
 router.get('/register', (req, res) => {
@@ -36,15 +38,15 @@ router.post('/register', (req, res) => {
 
     User.findOne({ username }, (err, user) => {
         if(!user){
-            if (err) { res.status(500).send('Eror occured') };
-            if (user) { res.status(500).send('This user allready exists') };
+            if (err) { res.status(500).send('Eror occured') }
+            if (user) { res.status(500).send('This user allready exists') }
             new User({ username, password })
                 .save((err, user) => {
                     if (err) { 
                         res.status(500).send('db error');
                         console.log(err);
-                    };
-                    res.redirect('/auth/login');
+                    }
+                    res.status(200).json({ username: user.username, userId: user.userId });
             });
         } else {
             res.send("Bad request");

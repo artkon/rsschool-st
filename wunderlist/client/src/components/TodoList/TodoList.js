@@ -68,6 +68,12 @@ class TodoList extends Component {
         }
     }
 
+    handleSubmitNewTodoOnEnter = (event) => {
+        if (event.key === 'Enter') {
+            this.handleSubmitNewTodo();
+        }
+    }
+
     handleChange = (event) => {
         const todoId = event.target.getAttribute('data-todoid');
         const title = event.target.value;
@@ -162,6 +168,7 @@ class TodoList extends Component {
                             type="text" value={this.state.newTodoInputValue}
                             onChange={this.handleChangeNewTodo}
                             onBlur={this.handleSubmitNewTodo}
+                            onKeyPress={this.handleSubmitNewTodoOnEnter}
                             placeholder="Enter new TODO"
                         />
                     </div>}
